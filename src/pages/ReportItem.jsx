@@ -20,20 +20,20 @@ export default function ReportItem({ currentUser, setItems, dispatchNotification
     const formData = new FormData(e.currentTarget);
     const fallbackUrl = "https://images.unsplash.com/photo-1532187863486-abf9d39d6618?w=500&q=80";
 
-    const processSubmission = (base64ImageUrl) => {
-      // Overwrite category or location with the custom type-in input if "Others" was chosen
-      const finalCategory = selectedCategory === "Others" ? formData.get("customCategory") : formData.get("category");
-      const finalLocation = selectedLocation === "Others" ? formData.get("customLocation") : formData.get("location");
+   const processSubmission = (base64ImageUrl) => {
+  // 🛠️ FIX: Read directly from your React state instead of formData for the dropdowns
+  const finalCategory = selectedCategory === "Others" ? formData.get("customCategory") : selectedCategory;
+  const finalLocation = selectedLocation === "Others" ? formData.get("customLocation") : selectedLocation;
 
-      const newItem = {
-        id: `item-${Date.now()}`,
-        reporterId: currentUser?.id || "anonymous",
-        type: activeTab,
-        itemName: formData.get("itemName"),
-        category: finalCategory,
-        description: formData.get("description"),
-        location: finalLocation,
-        date: formData.get("date"),
+  const newItem = {
+    id: `item-${Date.now()}`,
+    reporterId: currentUser?.id || "anonymous",
+    type: activeTab,
+    itemName: formData.get("itemName"),
+    category: finalCategory, // Will now contain the correct value!
+    description: formData.get("description"),
+    location: finalLocation, // Will now contain the correct value!
+    date: formData.get("date"),
         // 🛠️ FIX: Map to both property fields so ViewItems.jsx can read it cleanly
         image: base64ImageUrl, 
         imageUrl: base64ImageUrl,
