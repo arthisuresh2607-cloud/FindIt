@@ -1,0 +1,378 @@
+/* Container Layout */
+.about-container {
+  max-width: 896px;
+  margin: 0 auto;
+  padding: 0 16px 40px 16px; /* Added structured bottom padding to prevent loose spacing */
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  overflow: hidden; /* Contains any loose floating arrow paths inside the bounding box */
+}
+
+/* Badge styling */
+.badge {
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  display: inline-block;
+}
+.badge-indigo {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+.dark .badge-indigo {
+  background-color: rgba(67, 56, 202, 0.4);
+  color: #c7d2fe;
+}
+
+/* Hero Section */
+.about-hero {
+  text-align: center;
+  background: linear-gradient(135deg, #2563eb, #4f46e5, #7c3aed);
+  border-radius: 24px;
+  padding: 48px 16px;
+  color: #ffffff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.hero-title {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  margin: 16px 0 12px 0;
+}
+@media (min-width: 640px) {
+  .hero-title { font-size: 48px; }
+  .about-hero { padding: 48px; }
+}
+.hero-description {
+  color: #dbeafe;
+  max-width: 576px;
+  margin: 0 auto;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.625;
+}
+
+/* Quotes Section */
+.quotes-grid {
+  display: grid;
+  grid-template-cols: 1fr;
+  gap: 24px;
+}
+@media (min-width: 640px) {
+  .quotes-grid { grid-template-cols: 1fr 1fr; }
+}
+.quote-card {
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  position: relative;
+  padding-left: 48px;
+}
+.dark .quote-card {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+.quote-icon {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  font-size: 36px;
+  color: rgba(37, 99, 235, 0.2);
+  font-family: serif;
+}
+.quote-text {
+  font-size: 14px;
+  font-style: italic;
+  color: #475569;
+}
+.dark .quote-text { color: #cbd5e1; }
+.quote-author {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-top: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Info Section */
+.info-section {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.dark .info-section {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+@media (min-width: 640px) {
+  .info-section { padding: 32px; }
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.dark .section-title { color: #ffffff; }
+.section-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 4px;
+  line-height: 1.625;
+}
+.dark .section-subtitle { color: #94a3b8; }
+
+.info-cards-grid {
+  display: grid;
+  grid-template-cols: 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+@media (min-width: 640px) {
+  .info-cards-grid { grid-template-cols: repeat(3, 1fr); }
+}
+.info-card {
+  padding: 16px;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+.dark .info-card {
+  background-color: #0f172a;
+  border-color: #1e293b;
+}
+.card-icon { font-size: 20px; margin-bottom: 4px; }
+.card-title { font-size: 14px; font-weight: 700; color: #1e293b; }
+.dark .card-title { color: #e2e8f0; }
+.card-text { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+/* ------------------------------------------
+   ASYMMETRIC CANVAS FLOWCHART SYSTEM
+--------------------------------------------- */
+.visual-flowchart-container {
+  background-color: #f8fafc;
+  border-radius: 32px;
+  padding: 32px 16px;
+  border: 1px dashed #cbd5e1;
+  margin-bottom: 20px; /* Locks bottom flow spacing safely above page footer layout */
+}
+.dark .visual-flowchart-container {
+  background-color: #0f172a;
+  border-color: #334155;
+}
+.flowchart-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+/* Canvas Wrapper with Relative Positioning */
+.asymmetric-canvas {
+  position: relative;
+  min-height: 520px; /* Reduced to eliminate excess trailing gaps */
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* Fallback stacking structure for mobile phone viewports */
+@media (max-width: 768px) {
+  .asymmetric-canvas {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    min-height: auto;
+  }
+  .curved-arrow {
+    display: none !important;
+  }
+  .handwritten-label {
+    position: static !important;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .floating-group {
+    position: static !important;
+    width: 100% !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Individual node positioning rules on desktop grids */
+@media (min-width: 769px) {
+  .node-1 { position: absolute; top: 40px; left: 20px; width: 280px; }
+  .node-2 { position: absolute; top: 140px; right: 20px; width: 280px; }
+  .node-3 { position: absolute; top: 260px; left: 60px; width: 240px; }
+  .node-4 { position: absolute; bottom: 10px; right: 80px; width: 310px; }
+}
+
+/* Clean Minimal Card Objects */
+.aesthetic-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.03), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease;
+}
+.dark .aesthetic-card {
+  background: #1e293b;
+  border-color: rgba(51, 65, 85, 0.7);
+}
+.aesthetic-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Card Header Nodes */
+.card-node-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.node-icon {
+  font-size: 16px;
+}
+.node-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+}
+.dark .node-heading { color: #f1f5f9; }
+
+/* Micro Skeletons Layout Blocks with simple visible context text */
+.skeleton-preview, .skeleton-preview-split {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+}
+.dark .skeleton-preview, .dark .skeleton-preview-split {
+  border-color: #2d3748;
+}
+
+.skel-thumb-rose { width: 28px; height: 28px; background: #fff1f2; border-radius: 6px; flex-shrink: 0; }
+.dark .skel-thumb-rose { background: rgba(225, 29, 72, 0.15); }
+
+/* Circle outline matching layout preferences */
+.skel-avatar { 
+  width: 32px; 
+  height: 32px; 
+  background: transparent; 
+  border-radius: 9999px; 
+  flex-shrink: 0; 
+  border: 2.5px solid #3b82f6; 
+}
+
+.skel-lines { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.skel-line { 
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.dark .skel-line { color: #94a3b8; }
+
+.mini-badge-row { display: flex; gap: 6px; }
+.loc-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; background: #faf5ff; color: #7c3aed; border-radius: 6px; }
+.dark .loc-tag { background: rgba(124, 58, 237, 0.15); color: #d8b4fe; }
+
+.skeleton-preview-split { display: grid; grid-template-cols: 1fr 1fr; gap: 10px; }
+.split-subbox { background: #fafafa; border-radius: 8px; padding: 8px; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 4px; border: 1px solid #f1f5f9; }
+.dark .split-subbox { background: #131c2e; border-color: #253147; }
+.split-subbox.text-emerald { color: #059669; }
+.split-subbox.text-blue { color: #2563eb; }
+
+/* Elegant handwritten labels imitating font callouts */
+.handwritten-label {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4f46e5;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.dark .handwritten-label { color: #a5b4fc; }
+
+@media (min-width: 769px) {
+  .label-top { position: absolute; top: -35px; left: 10px; }
+  .label-right { position: absolute; top: -35px; left: 30px; }
+  .label-left-mid { position: absolute; bottom: -35px; left: 20px; }
+  .label-bottom-track { position: absolute; top: -45px; left: 140px; }
+}
+
+/* Curved dotted loop indicators looking like custom pointers */
+.curved-arrow {
+  position: absolute;
+  font-size: 16px;
+  color: #f59e0b;
+}
+
+@media (min-width: 769px) {
+  .arrow-top-to-card1 {
+    top: -10px; left: 160px;
+    transform: rotate(70deg);
+    border-bottom: 2px dashed #f59e0b;
+    border-radius: 50%; width: 40px; height: 25px; text-indent: -9999px;
+  }
+  .arrow-right-to-card2 {
+    top: -10px; left: 150px;
+    transform: rotate(110deg);
+    border-bottom: 2px dashed #f59e0b;
+    border-radius: 50%; width: 35px; height: 25px; text-indent: -9999px;
+  }
+  .arrow-left-to-card3 {
+    bottom: -15px; left: -10px;
+    transform: rotate(-40deg) scaleY(-1);
+    border-bottom: 2px dashed #f59e0b;
+    border-radius: 50%; width: 40px; height: 25px; text-indent: -9999px;
+  }
+  .arrow-bottom-to-card4 {
+    top: -25px; left: 95px;
+    transform: rotate(120deg);
+    border-bottom: 2px dashed #f59e0b;
+    border-radius: 50%; width: 45px; height: 30px; text-indent: -9999px;
+  }
+}
+/* Force parent theme inheritance */
+.about-container {
+  background-color: transparent;
+  color: #0f172a;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* When the app theme turns dark */
+.dark .about-container {
+  color: #f8fafc;
+}
+
+.dark .info-card {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+.dark .quote-card {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+.dark .aesthetic-card {
+  background: #1e293b !important;
+  border-color: rgba(51, 65, 85, 0.7) !important;
+}
+
+.dark .visual-flowchart-container {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+}

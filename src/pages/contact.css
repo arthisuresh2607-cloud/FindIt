@@ -1,0 +1,198 @@
+
+/* Container Layout */
+.contact-container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Header Text elements */
+.contact-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.contact-title {
+  font-size: 32px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+}
+.dark .contact-title { color: #ffffff; }
+.contact-subtitle {
+  font-size: 15px;
+  color: #64748b;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+.dark .contact-subtitle { color: #94a3b8; }
+
+/* Dashboard Layout Grid split screens */
+.contact-layout-grid {
+  display: grid;
+  grid-template-cols: 1fr;
+  gap: 24px;
+}
+@media (min-width: 768px) {
+  .contact-layout-grid { grid-template-cols: 1.2fr 1fr; }
+}
+
+/* Master Contact Card Base Styles */
+.contact-card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+}
+.dark .contact-card {
+  background-color: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+.card-heading {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+.dark .card-heading { color: #ffffff; }
+
+/* Interactive form inputs */
+.clean-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-group label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+.dark .form-group label { color: #94a3b8; }
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.dark .form-group input, 
+.dark .form-group select, 
+.dark .form-group textarea {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Submission action button styling */
+.submit-button {
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  margin-top: 8px;
+}
+.submit-button:hover { background-color: #1d4ed8; }
+.submit-button:active { transform: scale(0.98); }
+
+/* Right Column Contact Detail Panels Stack */
+.contact-details-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.detail-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.detail-icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Color palettes for context boxes */
+.blue-theme { background-color: #eff6ff; }
+.purple-theme { background-color: #faf5ff; }
+.rose-theme { background-color: #fff1f2; }
+.emerald-theme { background-color: #ecfdf5; }
+
+.dark .blue-theme { background-color: rgba(37, 99, 235, 0.15); }
+.dark .purple-theme { background-color: rgba(147, 51, 234, 0.15); }
+.dark .rose-theme { background-color: rgba(225, 29, 72, 0.15); }
+.dark .emerald-theme { background-color: rgba(5, 150, 105, 0.15); }
+
+.detail-content { display: flex; flex-direction: column; gap: 2px; }
+.detail-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+.dark .detail-title { color: #94a3b8; }
+.detail-text { font-size: 14px; font-weight: 700; color: #1e293b; }
+.dark .detail-text { color: #e2e8f0; }
+.detail-subtext { font-size: 12px; color: #94a3b8; }
+
+/* Notification elements upon success */
+.submission-success {
+  text-align: center;
+  padding: 32px 16px;
+}
+.success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  background-color: #d1fae5;
+  color: #065f46;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+  font-weight: bold;
+}
+.dark .success-icon {
+  background-color: rgba(5, 150, 105, 0.2);
+  color: #34d399;
+}
+.success-title { font-size: 16px; font-weight: 800; color: #065f46; }
+.dark .success-title { color: #34d399; }
+.success-text { font-size: 13px; color: #64748b; margin-top: 6px; line-height: 1.5; }
+.dark .success-text { color: #94a3b8; }
