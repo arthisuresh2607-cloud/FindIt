@@ -1,20 +1,39 @@
 import React from 'react';
+// Import Firebase database tools and instance bridge
+import { db } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function Login({ setCurrentUser, showToast, setCurrentPage }) {
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const selectedRole = formData.get("role");
     
-    setCurrentUser({
+    const userPayload = {
       id: `user-${Date.now()}`,
       name: selectedRole === "Admin" ? "System Admin Operator" : "Generic Student Entity",
       email: formData.get("email"),
-      role: selectedRole
-    });
-    
-    showToast(`Logged in successfully as ${selectedRole}`);
-    setCurrentPage(selectedRole === "Admin" ? "AdminPanel" : "Home");
+      role: selectedRole,
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      // Catalog logs into the cloud users ledger matching database preferences
+      await addDoc(collection(db, "users"), userPayload);
+
+      setCurrentUser({
+        id: userPayload.id,
+        name: userPayload.name,
+        email: userPayload.email,
+        role: userPayload.role
+      });
+      
+      showToast(`Logged in successfully as ${selectedRole}`);
+      setCurrentPage(selectedRole === "Admin" ? "AdminPanel" : "Home");
+    } catch (error) {
+      console.error("Firebase authentication logging detailed exception trace: ", error);
+      showToast("Cloud connection error. Database transaction failed.", "error");
+    }
   };
 
   return (

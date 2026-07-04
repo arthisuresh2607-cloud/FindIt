@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+// 1. Import Firestore database tools and instance bridge
+import { db } from '../firebase'; 
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function ReportItem({ currentUser, setItems, dispatchNotification, showToast, setCurrentPage, CATEGORIES, LOCATIONS }) {
   const [activeTab, setActiveTab] = useState("Lost");
@@ -20,20 +23,21 @@ export default function ReportItem({ currentUser, setItems, dispatchNotification
     const formData = new FormData(e.currentTarget);
     const fallbackUrl = "https://images.unsplash.com/photo-1532187863486-abf9d39d6618?w=500&q=80";
 
-   const processSubmission = (base64ImageUrl) => {
-  // 🛠️ FIX: Read directly from your React state instead of formData for the dropdowns
-  const finalCategory = selectedCategory === "Others" ? formData.get("customCategory") : selectedCategory;
-  const finalLocation = selectedLocation === "Others" ? formData.get("customLocation") : selectedLocation;
+    // 2. Swapped to an async function to gracefully await database transaction confirmation
+    const processSubmission = async (base64ImageUrl) => {
+      // 🛠️ FIX: Read directly from your React state instead of formData for the dropdowns
+      const finalCategory = selectedCategory === "Others" ? formData.get("customCategory") : selectedCategory;
+      const finalLocation = selectedLocation === "Others" ? formData.get("customLocation") : selectedLocation;
 
-  const newItem = {
-    id: `item-${Date.now()}`,
-    reporterId: currentUser?.id || "anonymous",
-    type: activeTab,
-    itemName: formData.get("itemName"),
-    category: finalCategory, // Will now contain the correct value!
-    description: formData.get("description"),
-    location: finalLocation, // Will now contain the correct value!
-    date: formData.get("date"),
+      const newItem = {
+        id: `item-${Date.now()}`,
+        reporterId: currentUser?.id || "anonymous",
+        type: activeTab,
+        itemName: formData.get("itemName"),
+        category: finalCategory, // Will now contain the correct value!
+        description: formData.get("description"),
+        location: finalLocation, // Will now contain the correct value!
+        date: formData.get("date"),
         // 🛠️ FIX: Map to both property fields so ViewItems.jsx can read it cleanly
         image: base64ImageUrl, 
         imageUrl: base64ImageUrl,
@@ -47,10 +51,18 @@ export default function ReportItem({ currentUser, setItems, dispatchNotification
         return;
       }
 
-      setItems(prev => [newItem, ...prev]);
-      dispatchNotification(`New ${activeTab} item cataloged: ${newItem.itemName}`, "system");
-      showToast("Asset Successfully Logged in System Engine!");
-      setCurrentPage("ViewItems");
+      try {
+        // 3. Save the payload entry straight into the "items" collection on the Firebase cloud
+        await addDoc(collection(db, "items"), newItem);
+
+        setItems(prev => [newItem, ...prev]);
+        dispatchNotification(`New ${activeTab} item cataloged: ${newItem.itemName}`, "system");
+        showToast("Asset Successfully Logged in System Engine!");
+        setCurrentPage("ViewItems");
+      } catch (error) {
+        console.error("Firebase write error detailed exception logs: ", error);
+        showToast("Cloud connection error. Database transaction failed.", "error");
+      }
     };
 
     if (selectedFile) {
