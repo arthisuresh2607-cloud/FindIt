@@ -1,120 +1,140 @@
-import React, { useState, useEffect } from 'react';
-import { db } from './firebase';
-import { collection, onSnapshot } from 'firebase/firestore';
-
-// Component Imports
+import React, { useState, useEffect, useMemo } from 'react';
+import { ThemeProvider } from "./pages/context/ThemeContext";
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Toast from './components/Toast';
+
 import Home from './pages/Home';
+import ReportItem from './pages/ReportItem';
 import ViewItems from './pages/ViewItems';
 import ItemDetails from './pages/ItemDetails';
-import ReportItem from './pages/ReportItem';
 import ClaimItem from './pages/ClaimItem';
 import AdminPanel from './pages/AdminPanel';
-import ContactOwner from './pages/ContactOwner';
-import Leaderboard from './pages/Leaderboard';
 import Login from './pages/Login';
+import About from './pages/About';
 import Contact from './pages/Contact';
+import ContactOwner from './pages/ContactOwner';
+import Leaderboard from './pages/Leaderboard'; // 1. Imported component
 
-export default function App() {
+const CATEGORIES = ["Electronics", "Documents/IDs", "Books/Notebooks", "Clothing", "Keys", "Bags/Wallets", "Others"];
+const LOCATIONS = ["A halls", "M halls", "B halls", "Library", "Food court", "Others"];
+const INITIAL_ITEMS = [];
+
+function MainLayoutContainer() {
   const [currentPage, setCurrentPage] = useState("Home");
-  const [currentUser, setCurrentUser] = useState(null);
-  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem("findit_user");
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const [items, setItems] = useState(() => {
+    const saved = localStorage.getItem("findit_items");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const containsMockData = parsed.some(item => item.id === "item-1" || item.id === "item-2" || item.itemName === "MacBook Pro 14");
+      if (containsMockData) {
+        localStorage.setItem("findit_items", JSON.stringify([]));
+        return INITIAL_ITEMS;
+      }
+      return parsed;
+    }
+    return INITIAL_ITEMS;
+  });
+
+  const [claims, setClaims] = useState(() => {
+    const saved = localStorage.getItem("findit_claims");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [notifications, setNotifications] = useState(() => {
+    const saved = localStorage.getItem("findit_notifications");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [filterType, setFilterType] = useState("All");
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [toast, setToast] = useState(null);
 
-  const [items, setItems] = useState([]);
-  const [claims, setClaims] = useState([]);
-
-  const CATEGORIES = ["Electronics", "Documents", "Books", "Clothing", "Keys", "Bags", "Others"];
-  const LOCATIONS = ["Library", "Main Cafeteria", "Science Block", "Engineering Building", "Sports Complex", "Student Center", "Auditorium"];
-
-  // Real-time synchronization of Items collection
   useEffect(() => {
-    const unsubscribeItems = onSnapshot(collection(db, "items"), (snapshot) => {
-      const itemsList = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setItems(itemsList);
-    }, (error) => console.error("Error syncing items:", error));
+    localStorage.setItem("findit_user", currentUser ? JSON.stringify(currentUser) : "");
+  }, [currentUser]);
 
-    return () => unsubscribeItems();
-  }, []);
-
-  // Real-time synchronization of Claims collection
   useEffect(() => {
-    const unsubscribeClaims = onSnapshot(collection(db, "claims"), (snapshot) => {
-      const claimsList = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setClaims(claimsList);
-    }, (error) => console.error("Error syncing claims:", error));
+    localStorage.setItem("findit_items", JSON.stringify(items));
+  }, [items]);
 
-    return () => unsubscribeClaims();
-  }, []);
+  useEffect(() => {
+    localStorage.setItem("findit_claims", JSON.stringify(claims));
+  }, [claims]);
+
+  useEffect(() => {
+    localStorage.setItem("findit_notifications", JSON.stringify(notifications));
+  }, [notifications]);
 
   const showToast = (message, type = "success") => {
-    console.log(`[Toast - ${type.toUpperCase()}]: ${message}`);
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
   };
 
-  const dispatchNotification = (notification) => {
-    console.log("[Notification dispatched]:", notification);
+  const dispatchNotification = (text, type = "system") => {
+    const newNotif = {
+      id: `notif-${Date.now()}`,
+      text,
+      type,
+      read: false,
+      timestamp: new Date().toISOString()
+    };
+    setNotifications(prev => [newNotif, ...prev]);
   };
 
-  const stats = {
-    totalItems: items.length,
-    lostItems: items.filter(i => i.type === "Lost").length,
-    foundItems: items.filter(i => i.type === "Found").length,
-    claimedItems: items.filter(i => i.status === "Claimed").length
-  };
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case "Login":
-        return <Login setCurrentUser={setCurrentUser} showToast={showToast} setCurrentPage={setCurrentPage} />;
-      case "AdminPanel":
-        return <AdminPanel claims={claims} setClaims={setClaims} items={items} setItems={setItems} dispatchNotification={dispatchNotification} showToast={showToast} />;
-      case "ReportItem":
-        return <ReportItem currentUser={currentUser} setItems={setItems} dispatchNotification={dispatchNotification} showToast={showToast} setCurrentPage={setCurrentPage} CATEGORIES={CATEGORIES} LOCATIONS={LOCATIONS} />;
-      case "ClaimItem":
-        return <ClaimItem selectedItemId={selectedItemId} items={items} currentUser={currentUser} setClaims={setClaims} setItems={setItems} dispatchNotification={dispatchNotification} showToast={showToast} setCurrentPage={setCurrentPage} />;
-      case "ItemDetails":
-        return <ItemDetails selectedItemId={selectedItemId} items={items} setCurrentPage={setCurrentPage} currentUser={currentUser} showToast={showToast} />;
-      case "ContactOwner":
-        return <ContactOwner selectedItemId={selectedItemId} currentUser={currentUser} showToast={showToast} />;
-      case "Leaderboard":
-        return <Leaderboard />;
-      case "Contact":
-        return <Contact />;
-      case "ViewItems":
-        return (
-          <ViewItems 
-            items={items} 
-            searchQuery={searchQuery} 
-            setSearchQuery={setSearchQuery} 
-            filterCategory={filterCategory} 
-            setFilterCategory={setFilterCategory} 
-            filterType={filterType} 
-            setFilterType={setFilterType} 
-            setSelectedItemId={setSelectedItemId} 
-            setCurrentPage={setCurrentPage} 
-            CATEGORIES={CATEGORIES} 
-          />
-        );
-      case "Home":
-      default:
-        return <Home stats={stats} setCurrentPage={setCurrentPage} setSearchQuery={setSearchQuery} setFilterCategory={setFilterCategory} setFilterType={setFilterType} CATEGORIES={CATEGORIES} />;
-    }
-  };
+  const stats = useMemo(() => {
+    return {
+      totalLost: items.filter(i => i.type === "Lost" && i.status !== "Claimed").length,
+      totalFound: items.filter(i => i.type === "Found" && i.status !== "Claimed").length,
+      totalClaimed: items.filter(i => i.status === "Claimed").length,
+      pendingClaims: claims.filter(c => c.status === "Pending").length
+    };
+  }, [items, claims]);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors duration-200">
-      <Navbar currentUser={currentUser} setCurrentUser={setCurrentUser} setCurrentPage={setCurrentPage} />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {renderPage()}
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
+      <Navbar 
+        currentPage={currentPage} 
+        setCurrentPage={setCurrentPage} 
+        currentUser={currentUser} 
+        setCurrentUser={setCurrentUser} 
+        notifications={notifications} 
+        setNotifications={setNotifications} 
+        showToast={showToast} 
+      />
+      
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+
+      <main className="flex-grow container mx-auto px-4 py-8">
+        {currentPage === "Home" && <Home stats={stats} setCurrentPage={setCurrentPage} setSearchQuery={setSearchQuery} setFilterCategory={setFilterCategory} setFilterType={setFilterType} CATEGORIES={CATEGORIES} />}
+        {currentPage === "Report" && <ReportItem currentUser={currentUser} setItems={setItems} dispatchNotification={dispatchNotification} showToast={showToast} setCurrentPage={setCurrentPage} CATEGORIES={CATEGORIES} LOCATIONS={LOCATIONS} />}
+        {currentPage === "ViewItems" && <ViewItems items={items} searchQuery={searchQuery} setSearchQuery={setSearchQuery} filterCategory={filterCategory} setFilterCategory={setFilterCategory} filterType={filterType} setFilterType={setFilterType} setSelectedItemId={setSelectedItemId} setCurrentPage={setCurrentPage} CATEGORIES={CATEGORIES} />}
+        {currentPage === "ItemDetails" && <ItemDetails selectedItemId={selectedItemId} items={items} setCurrentPage={setCurrentPage} setSelectedItemId={setSelectedItemId} />}
+        {currentPage === "ClaimItem" && <ClaimItem selectedItemId={selectedItemId} items={items} currentUser={currentUser} setClaims={setClaims} setItems={setItems} dispatchNotification={dispatchNotification} showToast={showToast} setCurrentPage={setCurrentPage} />}
+        {currentPage === "AdminPanel" && <AdminPanel claims={claims} setClaims={setClaims} items={items} setItems={setItems} showToast={showToast} />}
+        {currentPage === "Login" && <Login setCurrentUser={setCurrentUser} showToast={showToast} setCurrentPage={setCurrentPage} />}
+        {currentPage === "About" && <About />}
+        {currentPage === "Contact" && <Contact />}
+        {currentPage === "ContactOwner" && <ContactOwner selectedItemId={selectedItemId} currentUser={currentUser} showToast={showToast} />}
+        {currentPage === "Leaderboard" && <Leaderboard items={items} claims={claims} />} {/* 2. Added conditional render */}
       </main>
+
+      <Footer setCurrentPage={setCurrentPage} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <MainLayoutContainer />
+    </ThemeProvider>
   );
 }
