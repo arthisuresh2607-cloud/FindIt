@@ -4,10 +4,10 @@ import { db } from './firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 // Component Imports
-import Login from './components/Login';
-import ReportItem from './components/ReportItem_2';
-import ViewItems from './components/ViewItems';
-
+// Component Imports
+import Login from './pages/Login';
+import ReportItem from './pages/ReportItem';
+import ViewItems from './pages/ViewItems';
 export default function App() {
   // Global States
   const [currentPage, setCurrentPage] = useState("Home");
