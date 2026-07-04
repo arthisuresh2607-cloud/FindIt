@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 // Import Firebase database tools and instance bridge
 import { db } from './firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-
-// Component Imports
 // Component Imports
 import Login from './pages/Login';
 import ReportItem from './pages/ReportItem';
